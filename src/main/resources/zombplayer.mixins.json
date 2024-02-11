@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.apeng.zombplayer.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "ZombPlayer-forge.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
