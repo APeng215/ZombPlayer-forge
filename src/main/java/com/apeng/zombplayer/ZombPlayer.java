@@ -1,4 +1,4 @@
-package com.apeng.zombplayerforge;
+package com.apeng.zombplayer;
 
 import net.minecraftforge.fml.common.Mod;
 
