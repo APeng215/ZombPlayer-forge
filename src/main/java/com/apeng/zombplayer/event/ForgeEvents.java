@@ -28,17 +28,6 @@ public class ForgeEvents {
 
     private static final Capability<ZombieInventory> ZOMBIE_INVENTORY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
 
-    public static void playerSkullDroppingLogic(final LivingDropsEvent event) {
-        if (event.getEntity().level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)
-                && event.getEntity() instanceof Zombie zombie
-                && event.getSource().getEntity() instanceof Creeper creeper
-                && creeper.canDropMobsSkull()
-                && isEquipPlayerHead(zombie)) {
-            // TODO Supported to spawn player skull instead of zombie's.
-            zombie.spawnAtLocation(zombie.getItemBySlot(EquipmentSlot.HEAD));
-        }
-    }
-
     private static boolean isEquipPlayerHead(Zombie zombie) {
         return zombie.getItemBySlot(EquipmentSlot.HEAD).is(Items.PLAYER_HEAD);
     }

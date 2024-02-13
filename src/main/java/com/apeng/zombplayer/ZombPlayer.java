@@ -23,7 +23,6 @@ public class ZombPlayer {
         FORGE_EVENT_BUS.addGenericListener(Entity.class, ForgeEvents::attachInventoryCap2Zombies);
         FORGE_EVENT_BUS.addListener(ForgeEvents::spawnZombPlayerOnInfected);
         FORGE_EVENT_BUS.addListener(ForgeEvents::dropInvWhenZombieDies);
-        FORGE_EVENT_BUS.addListener(ForgeEvents::playerSkullDroppingLogic);
     }
 
 
