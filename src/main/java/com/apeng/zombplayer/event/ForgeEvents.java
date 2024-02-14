@@ -10,8 +10,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Drowned;
-import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -190,7 +190,7 @@ public class ForgeEvents {
     }
 
     private static boolean isPlayerInfected(LivingDeathEvent event) {
-        return event.getEntity() instanceof ServerPlayer && (event.getSource().getEntity() instanceof Zombie || event.getSource().getEntity() instanceof Husk);
+        return event.getEntity() instanceof ServerPlayer && event.getSource().getEntity() instanceof Zombie && !(event.getSource().getEntity() instanceof ZombifiedPiglin);
     }
 
     private static Zombie spawnPersistantZombie(ServerPlayer player) {
