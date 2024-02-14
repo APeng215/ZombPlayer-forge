@@ -49,4 +49,24 @@ public class ZombieInventory extends ItemStackHandler implements Iterable<ItemSt
     public Iterator<ItemStack> iterator() {
         return new ItemStackIterator(this.stacks);
     }
+
+    /**
+     * Transfer all item stacks to target inventory. The original inventory will be cleared automatically after the transmission.
+     * @param targetInventory target inventory that will receive the item stacks
+     * @throws IllegalArgumentException thrown if the size of the two inventory is not equal.
+     */
+    public void transferAllItemStacks(ZombieInventory targetInventory) {
+        checkSize(targetInventory);
+        for (int i = 0; i < this.getSlots(); i++) {
+            targetInventory.setStackInSlot(i, this.getStackInSlot(i));
+            this.setStackInSlot(i, ItemStack.EMPTY);
+        }
+    }
+
+    private void checkSize(ZombieInventory targetInventory) {
+        if (this.getSlots() != targetInventory.getSlots()) {
+            throw new IllegalArgumentException("The size of target inventory is unmatched.");
+        }
+    }
+
 }

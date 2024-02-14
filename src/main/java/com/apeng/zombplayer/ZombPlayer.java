@@ -20,9 +20,11 @@ public class ZombPlayer {
     private static final IEventBus MOD_EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
 
     public ZombPlayer() {
-        FORGE_EVENT_BUS.addGenericListener(Entity.class, ForgeEvents::attachInventoryCap2Zombies);
+        FORGE_EVENT_BUS.addGenericListener(Entity.class, ForgeEvents::attachInventoryCap2Zombie);
         FORGE_EVENT_BUS.addListener(ForgeEvents::spawnZombPlayerOnInfected);
         FORGE_EVENT_BUS.addListener(ForgeEvents::dropInvWhenZombieDies);
+        FORGE_EVENT_BUS.addListener(ForgeEvents::cacheInvBeforeDrownedConversion);
+        FORGE_EVENT_BUS.addListener(ForgeEvents::transferInvOnZombieDrownedConversion);
     }
 
 

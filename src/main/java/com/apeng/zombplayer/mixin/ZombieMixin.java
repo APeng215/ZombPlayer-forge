@@ -1,5 +1,6 @@
 package com.apeng.zombplayer.mixin;
 
+import com.apeng.zombplayer.mixinduck.InfectedPlayerMark;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.monster.Monster;
@@ -9,11 +10,15 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Zombie.class)
-public abstract class ZombieMixin extends Monster implements ZombieAT {
+public abstract class ZombieMixin extends Monster implements InfectedPlayerMark {
+
+    @Unique
+    private boolean isInfectedPlayer = false;
 
     protected ZombieMixin(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -34,4 +39,13 @@ public abstract class ZombieMixin extends Monster implements ZombieAT {
         return getEquiptedSkull(zombie).is(Items.PLAYER_HEAD);
     }
 
+    @Override
+    public boolean isInfectedPlayer() {
+        return isInfectedPlayer;
+    }
+
+    @Override
+    public void setAsInfectedPlayer() {
+        isInfectedPlayer = true;
+    }
 }

@@ -2,15 +2,15 @@ package com.apeng.zombplayer.event;
 
 import com.apeng.zombplayer.ZombPlayer;
 import com.apeng.zombplayer.capability.ZombieInventory;
+import com.apeng.zombplayer.mixinduck.InfectedPlayerMark;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Drowned;
+import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -19,19 +19,53 @@ import net.minecraft.world.level.GameRules;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.living.LivingConversionEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class ForgeEvents {
 
     private static final Capability<ZombieInventory> ZOMBIE_INVENTORY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    
+    private static ZombieInventory cachedInventory4ConvertingZombie;
+
+    public static void cacheInvBeforeDrownedConversion(LivingConversionEvent.Pre event) {
+        if (!(isZombieDrowned(event) && isZombieInfectedPlayer(event))) return;
+        Zombie zombie = (Zombie) event.getEntity();
+        zombie.getCapability(ZOMBIE_INVENTORY_CAPABILITY).ifPresent(zombieInventory -> cachedInventory4ConvertingZombie = zombieInventory);
+    }
+    
+    public static void transferInvOnZombieDrownedConversion(LivingConversionEvent.Post event) {
+        if (!(isZombieDrowned(event) && isZombieInfectedPlayer(event))) return;
+        Zombie zombie = (Zombie) event.getEntity();
+        Drowned drowned = (Drowned) event.getOutcome();
+        ((InfectedPlayerMark)drowned).setAsInfectedPlayer();
+        transferInv(drowned);
+    }
+
+    private static boolean isZombieInfectedPlayer(LivingEvent event) {
+        return ((InfectedPlayerMark) event.getEntity()).isInfectedPlayer();
+    }
+
+    private static void transferInv(Drowned drowned) {
+        drowned.getCapability(ZOMBIE_INVENTORY_CAPABILITY).ifPresent(cachedInventory4ConvertingZombie::transferAllItemStacks);
+    }
+
+    private static boolean isZombieDrowned(LivingConversionEvent.Pre event) {
+        return event.getEntity() instanceof Zombie && event.getOutcome().equals(EntityType.DROWNED);
+    }
+
+    private static boolean isZombieDrowned(LivingConversionEvent.Post event) {
+        return event.getEntity() instanceof Zombie && event.getOutcome() instanceof Drowned;
+    }
 
     /**
      * Drop zombie player's inventory when it dies. Dropping equipments is handled by vanilla.
      */
     public static void dropInvWhenZombieDies(final LivingDropsEvent event) {
-        if (!(event.getEntity() instanceof Zombie zombie)) return;
+        if (!(event.getEntity() instanceof Zombie zombie && isZombieInfectedPlayer(event))) return;
         if (isMobLootGameRuleOn(zombie)) {
             addZombieInventory2Drops(event, zombie);
         }
@@ -56,7 +90,7 @@ public class ForgeEvents {
         zombie.getCapability(ZOMBIE_INVENTORY_CAPABILITY).invalidate();
     }
 
-    public static void attachInventoryCap2Zombies(final AttachCapabilitiesEvent<Entity> event) {
+    public static void attachInventoryCap2Zombie(final AttachCapabilitiesEvent<Entity> event) {
         if (!(event.getObject() instanceof Zombie)) return;
         LazyOptional<ZombieInventory> optionalStorage = LazyOptional.of(() -> new ZombieInventory(36));
         ICapabilityProvider provider = new ICapabilitySerializable<CompoundTag>() {
@@ -70,15 +104,15 @@ public class ForgeEvents {
 
             @Override
             public CompoundTag serializeNBT() {
-                return optionalStorage.orElseThrow(() -> new NullPointerException("LazyOptional for zombie Inventory is null.")).serializeNBT();
+                return optionalStorage.orElseThrow(() -> new NullPointerException("LazyOptional for zombie/drowned inventory is null.")).serializeNBT();
             }
 
             @Override
             public void deserializeNBT(CompoundTag tag) {
-                optionalStorage.orElseThrow(() -> new NullPointerException("LazyOptional for zombie Inventory is null.")).deserializeNBT(tag);
+                optionalStorage.orElseThrow(() -> new NullPointerException("LazyOptional for zombie/drowned inventory is null.")).deserializeNBT(tag);
             }
         };
-        event.addCapability(new ResourceLocation(ZombPlayer.MOD_ID, "zombie_inventory"), provider);
+        event.addCapability(new ResourceLocation(ZombPlayer.MOD_ID, "inventory"), provider);
     }
 
     public static void spawnZombPlayerOnInfected(final LivingDeathEvent event) {
@@ -86,11 +120,15 @@ public class ForgeEvents {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         Zombie zombie = spawnPersistantZombie(player);
         if (shouldKeepInventory(player)) {
-            inheritHead(zombie, player);
-            zombie.setDropChance(EquipmentSlot.HEAD, -10f);
+            inheritHeadOnly(zombie, player);
         } else {
             transferEquipAndInv(zombie, player);
         }
+    }
+
+    private static void inheritHeadOnly(Zombie zombie, ServerPlayer player) {
+        inheritHead(zombie, player);
+        zombie.setDropChance(EquipmentSlot.HEAD, -10f);
     }
 
     private static boolean shouldKeepInventory(ServerPlayer player) {
@@ -114,8 +152,7 @@ public class ForgeEvents {
 
     private static void transferEquipment(Zombie zombie, ServerPlayer player, EquipmentSlot equipmentSlot) {
         if (shouldInheritHead(player, equipmentSlot)) {
-            inheritHead(zombie, player);
-            zombie.setDropChance(EquipmentSlot.HEAD, -10f);
+            inheritHeadOnly(zombie, player);
         } else {
             normalTransfer(zombie, player, equipmentSlot);
         }
@@ -153,7 +190,7 @@ public class ForgeEvents {
     }
 
     private static boolean isPlayerInfected(LivingDeathEvent event) {
-        return event.getEntity() instanceof ServerPlayer && event.getSource().getEntity() instanceof Zombie;
+        return event.getEntity() instanceof ServerPlayer && (event.getSource().getEntity() instanceof Zombie || event.getSource().getEntity() instanceof Husk);
     }
 
     private static Zombie spawnPersistantZombie(ServerPlayer player) {
@@ -161,6 +198,7 @@ public class ForgeEvents {
         zombie.setCustomName(player.getDisplayName());
         zombie.setCustomNameVisible(true);
         zombie.setPersistenceRequired();
+        ((InfectedPlayerMark)zombie).setAsInfectedPlayer();
         return zombie;
     }
 
