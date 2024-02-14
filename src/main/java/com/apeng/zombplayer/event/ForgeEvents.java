@@ -11,7 +11,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -27,10 +26,6 @@ import org.jetbrains.annotations.NotNull;
 public class ForgeEvents {
 
     private static final Capability<ZombieInventory> ZOMBIE_INVENTORY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
-
-    private static boolean isEquipPlayerHead(Zombie zombie) {
-        return zombie.getItemBySlot(EquipmentSlot.HEAD).is(Items.PLAYER_HEAD);
-    }
 
     /**
      * Drop zombie player's inventory when it dies. Dropping equipments is handled by vanilla.
@@ -90,7 +85,16 @@ public class ForgeEvents {
         if (!isPlayerInfected(event)) return;
         ServerPlayer player = (ServerPlayer) event.getEntity();
         Zombie zombie = spawnPersistantZombie(player);
-        transferEquipAndInv(zombie, player);
+        if (shouldKeepInventory(player)) {
+            inheritHead(zombie, player);
+            zombie.setDropChance(EquipmentSlot.HEAD, -10f);
+        } else {
+            transferEquipAndInv(zombie, player);
+        }
+    }
+
+    private static boolean shouldKeepInventory(ServerPlayer player) {
+        return player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY);
     }
 
     private static void transferEquipAndInv(Zombie zombie, ServerPlayer player) {

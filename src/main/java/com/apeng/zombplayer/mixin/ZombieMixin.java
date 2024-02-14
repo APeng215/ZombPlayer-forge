@@ -1,6 +1,5 @@
 package com.apeng.zombplayer.mixin;
 
-import com.apeng.zombplayer.mixinduck.ZombieAT;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.monster.Monster;
@@ -10,7 +9,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -24,7 +22,7 @@ public abstract class ZombieMixin extends Monster implements ZombieAT {
     @Redirect(method = "dropCustomDeathLoot(Lnet/minecraft/world/damagesource/DamageSource;IZ)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/Zombie;getSkull()Lnet/minecraft/world/item/ItemStack;"))
     private ItemStack dropPlayerSkullOnNecessary(Zombie zombie) {
-         return equipPlayerSkull(zombie) ? getEquiptedSkull(zombie) : ((ZombieAT)zombie).getSkull();
+         return equipPlayerSkull(zombie) ? getEquiptedSkull(zombie) : ((ZombieAT)zombie).invokeGetSkull();
     }
 
     @NotNull
@@ -36,7 +34,4 @@ public abstract class ZombieMixin extends Monster implements ZombieAT {
         return getEquiptedSkull(zombie).is(Items.PLAYER_HEAD);
     }
 
-    @Shadow
-    @Override
-    public abstract ItemStack getSkull();
 }
