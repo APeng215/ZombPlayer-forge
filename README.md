@@ -7,12 +7,6 @@
 
 This is a forge mod for Minecraft which spawns a zombified player when a player is killed by zombified creature.
 
-## How to Install
-
-1. [Download]() the Jar File of proper version.
-2. Copy or cut the jar file you've just downloaded to your mod path (usually ".../.minecraft/mods" or ".../.minecraft/versions/\<versionName>/mods")
-3. Make sure you have installed forge of proper version.
-
 ## Features
 
 - When a player is killed by zombified creature (including husks, drowneds etc.), a zombie will be spawned in the place.
@@ -20,6 +14,12 @@ This is a forge mod for Minecraft which spawns a zombified player when a player 
 - The head of the zombie is same as the player's, and will drop if killed by a __charged creeper__.
 - The zombie will convert to the drowned when drowned like normal zombies.
 - Type command `/gamerule doPlayerInfected [false/true]` to switch the mod. (Default true).
+
+## How to Install
+
+1. [Download]() the Jar File of proper version.
+2. Copy or cut the jar file you've just downloaded to your mod path (usually ".../.minecraft/mods" or ".../.minecraft/versions/\<versionName>/mods")
+3. Make sure you have installed forge of proper version.
 
 ## Credits
 
