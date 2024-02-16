@@ -1,6 +1,7 @@
 package com.apeng.zombplayer;
 
 import com.apeng.zombplayer.event.ForgeEvents;
+import com.apeng.zombplayer.gamerule.ZPGameRules;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -25,6 +26,7 @@ public class ZombPlayer {
         FORGE_EVENT_BUS.addListener(ForgeEvents::dropInvWhenZombieDies);
         FORGE_EVENT_BUS.addListener(ForgeEvents::cacheInvBeforeDrownedConversion);
         FORGE_EVENT_BUS.addListener(ForgeEvents::transferInvOnZombieDrownedConversion);
+        MOD_EVENT_BUS.addListener(ZPGameRules::registerAll);
     }
 
 

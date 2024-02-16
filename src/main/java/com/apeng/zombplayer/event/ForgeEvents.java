@@ -2,6 +2,7 @@ package com.apeng.zombplayer.event;
 
 import com.apeng.zombplayer.ZombPlayer;
 import com.apeng.zombplayer.capability.ZombieInventory;
+import com.apeng.zombplayer.gamerule.ZPGameRules;
 import com.apeng.zombplayer.mixinduck.InfectedPlayerMark;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.living.LivingConversionEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -30,6 +32,10 @@ public class ForgeEvents {
     private static final Capability<ZombieInventory> ZOMBIE_INVENTORY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
     
     private static ZombieInventory cachedInventory4ConvertingZombie;
+
+    public static void registerModEffectSwitchCommand(RegisterCommandsEvent event) {
+
+    }
 
     public static void cacheInvBeforeDrownedConversion(LivingConversionEvent.Pre event) {
         if (!(isZombieDrowned(event) && isZombieInfectedPlayer(event))) return;
@@ -116,7 +122,7 @@ public class ForgeEvents {
     }
 
     public static void spawnZombPlayerOnInfected(final LivingDeathEvent event) {
-        if (!isPlayerInfected(event)) return;
+        if (!(isPlayerInfected(event) && shouldPlayerInfected(event))) return;
         ServerPlayer player = (ServerPlayer) event.getEntity();
         Zombie zombie = spawnPersistantZombie(player);
         if (shouldKeepInventory(player)) {
@@ -124,6 +130,10 @@ public class ForgeEvents {
         } else {
             transferEquipAndInv(zombie, player);
         }
+    }
+
+    private static boolean shouldPlayerInfected(LivingDeathEvent event) {
+        return event.getEntity().level().getGameRules().getBoolean(ZPGameRules.RULE_DOPLAYERINFECTED);
     }
 
     private static void inheritHeadOnly(Zombie zombie, ServerPlayer player) {
@@ -195,6 +205,7 @@ public class ForgeEvents {
 
     private static Zombie spawnPersistantZombie(ServerPlayer player) {
         Zombie zombie = EntityType.ZOMBIE.spawn(player.serverLevel(), player.blockPosition(), MobSpawnType.CONVERSION);
+        zombie.setBaby(false);
         zombie.setCustomName(player.getDisplayName());
         zombie.setCustomNameVisible(true);
         zombie.setPersistenceRequired();
