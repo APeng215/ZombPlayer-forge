@@ -21,6 +21,10 @@ This is a forge mod for Minecraft which spawns a zombified player when a player 
 2. Copy or cut the jar file you've just downloaded to your mod path (usually ".../.minecraft/mods" or ".../.minecraft/versions/\<versionName>/mods")
 3. Make sure you have installed forge of proper version.
 
+## Feedback
+
+Anybody could [create an issue](https://github.com/APeng215/ZombPlayer-forge/issues/new) to report bugs, give suggestions and so on.
+
 ## Credits
 
 ### Localization
