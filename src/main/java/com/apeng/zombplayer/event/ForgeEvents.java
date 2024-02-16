@@ -33,10 +33,6 @@ public class ForgeEvents {
     
     private static ZombieInventory cachedInventory4ConvertingZombie;
 
-    public static void registerModEffectSwitchCommand(RegisterCommandsEvent event) {
-
-    }
-
     public static void cacheInvBeforeDrownedConversion(LivingConversionEvent.Pre event) {
         if (!(isZombieDrowned(event) && isZombieInfectedPlayer(event))) return;
         Zombie zombie = (Zombie) event.getEntity();
