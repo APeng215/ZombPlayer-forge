@@ -119,8 +119,11 @@ public class ForgeEvents {
 
     public static void spawnZombPlayerOnInfected(final LivingDeathEvent event) {
         if (!(isPlayerInfected(event) && shouldPlayerInfected(event))) return;
+
         ServerPlayer player = (ServerPlayer) event.getEntity();
         Zombie zombie = spawnPersistantZombie(player);
+
+        player.setInvisible(true); // Set invisible to hide dying animation
         if (shouldKeepInventory(player)) {
             inheritHeadOnly(zombie, player);
         } else {
