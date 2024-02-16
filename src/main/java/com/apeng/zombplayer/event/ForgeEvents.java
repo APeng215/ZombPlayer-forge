@@ -196,7 +196,7 @@ public class ForgeEvents {
     }
 
     private static boolean isPlayerInfected(LivingDeathEvent event) {
-        return event.getEntity() instanceof ServerPlayer && event.getSource().getEntity() instanceof Zombie && !(event.getSource().getEntity() instanceof ZombifiedPiglin);
+        return event.getEntity() instanceof ServerPlayer && event.getSource().getEntity() instanceof Zombie;
     }
 
     private static Zombie spawnPersistantZombie(ServerPlayer player) {
