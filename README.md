@@ -13,7 +13,7 @@ This is a forge mod for Minecraft which spawns a zombified player when a player 
 - The zombie will inherit player's equipment and inventory. Players need to kill the zombie to retrieve them. _This feature won't work when the gamerule `keepInventory` is set to true._
 - The head of the zombie is same as the player's, and will drop if killed by a __charged creeper__.
 - The zombie will convert to the drowned when drowned like normal zombies.
-- Type command `/gamerule doPlayerInfected [false/true]` to switch the mod. (Default true).
+- Type command `/gamerule doPlayerInfected [false/true]` to switch the mod. (Default true)
 
 ## How to Install
 
