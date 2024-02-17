@@ -17,7 +17,7 @@ This is a forge mod for Minecraft which spawns a zombified player when a player 
 
 ## Gallery
 
-<img src="README_resource/demo.png" width="500px"/>
+<img src="README_resource/demo.png" width="400px"/>
 
 ## How to Install
 
