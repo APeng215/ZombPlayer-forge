@@ -15,6 +15,10 @@ This is a forge mod for Minecraft which spawns a zombified player when a player 
 - The zombie will convert to the drowned when drowned like normal zombies.
 - Type command `/gamerule doPlayerInfected [false/true]` to switch the mod. (Default true)
 
+## Gallery
+
+<img src="README_resource/demo.png" width="500px"/>
+
 ## How to Install
 
 1. [Download]() the Jar File of proper version.
