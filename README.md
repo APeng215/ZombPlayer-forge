@@ -2,8 +2,10 @@
 
 # ZombPlayer
 
-[![CurseForge site](http://cf.way2muchnoise.eu/full_filtpick_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/filtpick)
-[![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https://api.modrinth.com/v2/project/filtpick&query=$.downloads&suffix=%20downloads&logo=Modrinth&label)](https://modrinth.com/mod/filtpick)
+[![CurseForge download](https://img.shields.io/badge/Curseforge-download-orange?style=flat-square&logo=curseforge
+)](https://www.curseforge.com/minecraft/mc-mods/zombplayer)
+[![Modrinth download](https://img.shields.io/badge/Modrinth-download-darkgreen?style=flat-square&logo=modrinth
+)](https://modrinth.com/mod/zombplayer)
 
 This is a forge mod for Minecraft which spawns a zombified player when a player is killed by zombified creature.
 
