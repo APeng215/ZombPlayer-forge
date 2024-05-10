@@ -4,7 +4,7 @@
 
 [![CurseForge download](https://img.shields.io/badge/Curseforge-download-orange?style=flat-square&logo=curseforge
 )](https://www.curseforge.com/minecraft/mc-mods/zombplayer)
-[![Modrinth download](https://img.shields.io/badge/Modrinth-download-darkgreen?style=flat-square&logo=modrinth
+[![Modrinth download](https://img.shields.io/badge/Modrinth-download-blue?style=flat-square&logo=modrinth
 )](https://modrinth.com/mod/zombplayer)
 
 This is a forge mod for Minecraft which spawns a zombified player when a player is killed by zombified creature.
