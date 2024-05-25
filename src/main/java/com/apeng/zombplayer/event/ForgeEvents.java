@@ -5,6 +5,7 @@ import com.apeng.zombplayer.capability.ZombieInventory;
 import com.apeng.zombplayer.gamerule.ZPGameRules;
 import com.apeng.zombplayer.mixinduck.InfectedPlayerMark;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.GameRules;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.LazyOptional;
@@ -174,7 +176,7 @@ public class ForgeEvents {
 
     private static void inheritHead(Zombie zombie, ServerPlayer player) {
         ItemStack playerSkull = new ItemStack(Items.PLAYER_HEAD);
-        playerSkull.setTag(CompoundTag.builder().put("SkullOwner", player.getDisplayName().getString()).build());
+        playerSkull.set(DataComponents.PROFILE, new ResolvableProfile(player.getGameProfile()));
         zombie.setItemSlot(EquipmentSlot.HEAD, playerSkull);
     }
 
